@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQC - Super Quant Club | Technological Innovation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Saira:wght@300;400;600;700;900&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-black: #0a0a0a;
+            --dark-bg: #0f0f0f;
+            --darker-bg: #0a0a0a;
+            --card-bg: #1a1a1a;
+            --accent-blue: #3b82f6;
+            --accent-blue-bright: #60a5fa;
+            --light-gray: #f5f5f5;
+            --mid-gray: #9ca3af;
+            --dark-gray: #6b7280;
+            --white: #ffffff;
+            --off-white: #e5e7eb;
+            --border-gray: #262626;
+            --border-light: #333333;
+        }
+
+        /* Theme Variables */
+        body {
+            --bg-primary: var(--dark-bg);
+            --bg-secondary: var(--darker-bg);
+            --bg-card: var(--card-bg);
+            --text-primary: var(--off-white);
+            --text-secondary: var(--mid-gray);
+            --border-primary: var(--border-gray);
+            --border-secondary: var(--border-light);
+            --nav-bg: rgba(15, 15, 15, 0.95);
+            --hero-gradient-start: var(--dark-bg);
+            --hero-gradient-end: var(--darker-bg);
+            --hero-overlay: 0.05;
+            --gradient-overlay: rgba(59, 130, 246, 0.05);
+            --accent-primary: var(--accent-blue-bright);
+            --tag-bg: rgba(59, 130, 246, 0.15);
+            --tag-border: rgba(59, 130, 246, 0.3);
+            --cta-bg: var(--white);
+            --cta-text: var(--primary-black);
+        }
+
+        body.light-mode {
+            --bg-primary: var(--white);
+            --bg-secondary: var(--light-gray);
+            --bg-card: var(--white);
+            --text-primary: var(--primary-black);
+            --text-secondary: var(--dark-gray);
+            --border-primary: var(--off-white);
+            --border-secondary: #e5e7eb;
+            --nav-bg: rgba(255, 255, 255, 0.95);
+            --hero-gradient-start: var(--white);
+            --hero-gradient-end: var(--light-gray);
+            --hero-overlay: 0.08;
+            --gradient-overlay: rgba(37, 99, 235, 0.02);
+            --accent-primary: var(--accent-blue);
+            --tag-bg: rgba(37, 99, 235, 0.1);
+            --tag-border: rgba(37, 99, 235, 0.2);
+            --cta-bg: var(--primary-black);
+            --cta-text: var(--white);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.7;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Minimal Background */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+            background: var(--bg-primary);
+            transition: background 0.3s ease;
+        }
+
+        .bg-grid::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to left, var(--gradient-overlay), transparent);
+            transition: background 0.3s ease;
+        }
+
+        @keyframes float-shape {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(50px, -50px) scale(1.1);
+            }
+            66% {
+                transform: translate(-30px, 30px) scale(0.9);
+            }
+        }
+
+        @keyframes gridMove {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(50px, 50px);
+            }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 2rem 5%;
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-primary);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 1.5rem 5%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Saira', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 400;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--text-primary);
+            transition: width 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            background: var(--bg-card);
+            border: 1px solid var(--border-primary);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .theme-icon {
+            font-size: 1.1rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            background: linear-gradient(to bottom, var(--hero-gradient-start), var(--hero-gradient-end));
+            transition: background 0.3s ease;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('/mnt/user-data/uploads/1770641952424_image.png') center/cover no-repeat;
+            opacity: var(--hero-overlay);
+            z-index: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 1000px;
+            padding: 2rem;
+        }
+
+        .hero h1 {
+            font-family: 'Saira', sans-serif;
+            font-size: 5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            letter-spacing: -3px;
+            line-height: 1.1;
+        }
+
+        .hero h2 {
+            font-size: 1.2rem;
+            color: var(--accent-primary);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            line-height: 1.8;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--cta-bg);
+            color: var(--cta-text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            border: 2px solid var(--cta-bg);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button:hover {
+            background: transparent;
+            color: var(--text-primary);
+            border-color: var(--text-primary);
+        }
+
+        /* Content Sections */
+        section {
+            position: relative;
+            padding: 6rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+            z-index: 10;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .section-header.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header h2 {
+            font-family: 'Saira', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            letter-spacing: -1px;
+        }
+
+        .accent-line {
+            width: 80px;
+            height: 3px;
+            background: var(--accent-primary);
+            margin: 0 auto;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-primary);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .feature-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* About Section */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-text {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.6s ease;
+        }
+
+        .about-text.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .about-text h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        .tech-visual {
+            height: 400px;
+            background: linear-gradient(135deg, var(--tag-bg), rgba(59, 130, 246, 0.05));
+            border-radius: 8px;
+            border: 1px solid var(--border-secondary);
+            opacity: 0;
+            transform: translateX(30px);
+            transition: all 0.6s ease;
+            position: relative;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .tech-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 6px;
+            transition: transform 0.3s ease;
+        }
+
+        .tech-visual img:hover {
+            transform: scale(1.05);
+        }
+
+        .tech-visual.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Projects Section */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .project-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-primary);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .project-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.15);
+        }
+
+        .project-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .project-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            background: var(--tag-bg);
+            color: var(--accent-primary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            border: 1px solid var(--tag-border);
+        }
+
+        /* Stats Section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-card);
+            border-radius: 8px;
+            border: 1px solid var(--border-primary);
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.5s ease;
+        }
+
+        .stat-card.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .stat-card:hover {
+            border-color: var(--accent-primary);
+            transform: scale(1.05);
+        }
+
+        .stat-number {
+            font-family: 'Saira', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-primary);
+            padding: 3rem 5%;
+            text-align: center;
+            color: var(--text-secondary);
+            transition: background 0.3s ease;
+        }
+
+        footer p {
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--text-primary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
+                letter-spacing: -2px;
+            }
+
+            .hero h2 {
+                font-size: 1rem;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .tech-visual {
+                height: 300px;
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+                font-size: 0.85rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scroll reveal animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">SQC</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#stats">Impact</a></li>
+                <li>
+                    <button class="theme-toggle" id="themeToggle">
+                        <span class="theme-icon">🌙</span>
+                        <span class="theme-text">Dark</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h2>Welcome to the Future</h2>
+            <h1>SUPER QUANT CLUB</h1>
+            <p>Where innovation meets execution. We're a community of visionary engineers, coders, and creators building breakthrough technology that shapes tomorrow.</p>
+            <a href="#about" class="cta-button">Explore Our Work</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features">
+        <div class="section-header reveal">
+            <h2>What We Do</h2>
+            <div class="accent-line"></div>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">💡</div>
+                <h3>Innovation Labs</h3>
+                <p>State-of-the-art facilities equipped with 3D printers, laser cutters, microcontrollers, and advanced prototyping tools. Our lab operates 24/7, giving members unlimited access to bring their wildest ideas to life.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎓</div>
+                <h3>Expert Mentorship</h3>
+                <p>Connect with PhD researchers, industry veterans from tech giants, and successful startup founders. Our mentors provide weekly office hours, technical guidance, and career insights to accelerate your growth.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🤝</div>
+                <h3>Collaborative Projects</h3>
+                <p>Join cross-functional teams tackling real-world challenges for partner companies and nonprofits. From developing medical devices to building sustainable tech solutions, make meaningful impact while building your portfolio.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🏆</div>
+                <h3>Competitions & Hackathons</h3>
+                <p>Compete in prestigious events like MIT's Hardware Hack, Google's Code Jam, and international robotics championships. We provide funding, training, and team coordination to help you win big and gain recognition.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="section-header reveal">
+            <h2>Our Mission</h2>
+            <div class="accent-line"></div>
+        </div>
+        
+        <div class="about-content">
+            <div class="about-text">
+                <h3>Innovate. Design. Create.</h3>
+                <p>The Super Quant Club is more than a college organization—it's a launchpad for technological breakthroughs. We bring together brilliant minds passionate about transforming abstract concepts into tangible innovations.</p>
+                <p>From quantum computing to AI-driven systems, from sustainable energy solutions to next-generation robotics, our members are at the forefront of technological evolution.</p>
+                <p>We foster an environment where creativity meets engineering precision, where bold ideas are nurtured, and where failure is just another step toward success.</p>
+            </div>
+            
+            <div class="tech-visual">
+                <img src="/mnt/user-data/uploads/robot.webp" alt="Advanced Humanoid Robot">
+                <img src="/mnt/user-data/uploads/Science_Spot.webp" alt="Boston Dynamics Robot">
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects">
+        <div class="section-header reveal">
+            <h2>Breakthrough Projects</h2>
+            <div class="accent-line"></div>
+        </div>
+        
+        <div class="projects-grid">
+            <div class="project-card">
+                <div class="project-icon">🤖</div>
+                <h3>QuantumSense AI</h3>
+                <p>An advanced machine learning framework that leverages quantum computing principles to solve complex optimization problems 1000x faster than traditional algorithms.</p>
+                <div class="project-tags">
+                    <span class="tag">Quantum Computing</span>
+                    <span class="tag">AI/ML</span>
+                    <span class="tag">Python</span>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-icon">⚡</div>
+                <h3>NeuroPulse Device</h3>
+                <p>A non-invasive brain-computer interface that translates neural signals into digital commands, enabling seamless human-machine interaction for accessibility applications.</p>
+                <div class="project-tags">
+                    <span class="tag">BCI</span>
+                    <span class="tag">Neuroscience</span>
+                    <span class="tag">IoT</span>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-icon">🔋</div>
+                <h3>SolarMatrix System</h3>
+                <p>Revolutionary solar panel optimization system using AI-driven adaptive positioning, increasing energy capture efficiency by 45% compared to static installations.</p>
+                <div class="project-tags">
+                    <span class="tag">Clean Energy</span>
+                    <span class="tag">Robotics</span>
+                    <span class="tag">Sustainability</span>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-icon">🧬</div>
+                <h3>BioScan Pro</h3>
+                <p>Portable diagnostic device utilizing advanced biosensors and machine learning to detect health anomalies and provide instant analysis for early disease detection.</p>
+                <div class="project-tags">
+                    <span class="tag">Biotech</span>
+                    <span class="tag">Healthcare</span>
+                    <span class="tag">Sensors</span>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-icon">🌐</div>
+                <h3>MeshNet Protocol</h3>
+                <p>Decentralized communication network that creates resilient, peer-to-peer connections independent of traditional infrastructure—perfect for disaster relief scenarios.</p>
+                <div class="project-tags">
+                    <span class="tag">Networking</span>
+                    <span class="tag">Blockchain</span>
+                    <span class="tag">Security</span>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-icon">🚁</div>
+                <h3>AeroSwarm Drones</h3>
+                <p>Autonomous drone swarm system with collective intelligence for precision agriculture, environmental monitoring, and rapid emergency response coordination.</p>
+                <div class="project-tags">
+                    <span class="tag">Drones</span>
+                    <span class="tag">Swarm AI</span>
+                    <span class="tag">Automation</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section id="stats">
+        <div class="section-header reveal">
+            <h2>Our Impact</h2>
+            <div class="accent-line"></div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Active Members</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">25+</div>
+                <div class="stat-label">Projects Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">12</div>
+                <div class="stat-label">Awards Won</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">100K+</div>
+                <div class="stat-label">Lines of Code</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Super Quant Club. Building Tomorrow's Technology Today.</p>
+        <div class="footer-links">
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#projects">Projects</a>
+            <a href="#">Join Us</a>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.querySelector('.theme-icon');
+        const themeText = document.querySelector('.theme-text');
+        
+        // Check for saved theme preference or default to dark mode
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        if (currentTheme === 'light') {
+            document.body.classList.add('light-mode');
+            themeIcon.textContent = '☀️';
+            themeText.textContent = 'Light';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            
+            if (document.body.classList.contains('light-mode')) {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light';
+                localStorage.setItem('theme', 'light');
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Scroll Reveal Animation
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.reveal, .about-text, .tech-visual, .project-card, .stat-card');
+            
+            reveals.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('visible');
+                }
+            });
+        }
+
+        // Navbar scroll effect
+        function handleNavbarScroll() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        }
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Counter Animation for Stats
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            
+            counters.forEach(counter => {
+                const target = counter.textContent;
+                const isNumber = !target.includes('+') && !target.includes('K');
+                let numericTarget = parseInt(target.replace(/\D/g, ''));
+                
+                if (target.includes('K')) {
+                    numericTarget = numericTarget * 1000;
+                }
+                
+                const duration = 2000;
+                const increment = numericTarget / (duration / 16);
+                let current = 0;
+                
+                const updateCounter = () => {
+                    current += increment;
+                    if (current < numericTarget) {
+                        if (target.includes('K')) {
+                            counter.textContent = Math.floor(current / 1000) + 'K+';
+                        } else {
+                            counter.textContent = Math.floor(current) + '+';
+                        }
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = target;
+                    }
+                };
+                
+                // Check if element is visible
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            updateCounter();
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                });
+                
+                observer.observe(counter.parentElement);
+            });
+        }
+
+        // Initialize
+        window.addEventListener('scroll', () => {
+            revealOnScroll();
+            handleNavbarScroll();
+        });
+
+        window.addEventListener('load', () => {
+            revealOnScroll();
+            animateCounters();
+        });
+
+        // Initial reveal check
+        revealOnScroll();
+    </script>
+</body>
+</html>
